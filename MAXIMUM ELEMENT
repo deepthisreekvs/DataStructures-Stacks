@@ -1,0 +1,78 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+#
+# Complete the 'getMax' function below.
+#
+# The function is expected to return an INTEGER_ARRAY.
+# The function accepts STRING_ARRAY operations as parameter.
+#
+
+def getMax(operations):
+    # Write your code here
+
+    # Initialize an empty list to store the answer
+    answer=[]
+
+    # Initialize an empty list to store elements
+    arr=[]
+
+    # Initialize a list with a single element, negative infinity, to track the maximum value
+    max_value=[-math.inf]
+
+    # Iterate through each operation in the 'operations' list
+    for oper in operations:
+
+        # Split the operation string into a list of strings
+        now_operation=oper.split()
+
+        # Check if the operation is of type '1'
+        if now_operation[0]=='1':
+
+            # Convert the second part of the operation to an integer
+            new_value=int(now_operation[1])
+
+            # Append the new value to the 'arr' list
+            arr.append(new_value)
+
+            # Calculate the new maximum value and append it to the 'max_value' list
+            max_value.append(max(max_value[-1], new_value))
+
+        # Check if the operation is of type '2'
+        elif now_operation[0]=='2':
+
+            # Remove the last element from both 'arr' and 'max_value'
+            arr.pop(-1)
+            max_value.pop(-1)
+
+        # For any other operation type
+        else:
+
+            # Append the current maximum value to the 'answer' list
+            answer.append(max_value[-1])
+
+    # Return the 'answer' list as the result of the operations
+    return answer
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    n = int(input().strip())
+
+    ops = []
+
+    for _ in range(n):
+        ops_item = input()
+        ops.append(ops_item)
+
+    res = getMax(ops)
+
+    fptr.write('\n'.join(map(str, res)))
+    fptr.write('\n')
+
+    fptr.close()
