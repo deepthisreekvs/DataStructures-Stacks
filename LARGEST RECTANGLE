@@ -1,0 +1,79 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+#
+# Complete the 'largestRectangle' function below.
+#
+# The function is expected to return a LONG_INTEGER.
+# The function accepts INTEGER_ARRAY h as parameter.
+#
+
+##################################################  WRITTEN  THE  CODE  FROM  HERE  #################################################################
+
+# Define a function called nsr which calculates the index of the next smaller element to the right for each element in the input array 'arr'
+def nsr(arr):
+    ans = []  # Initialize an empty list 'ans' to store the results
+    st = []   # Initialize an empty stack 'st' to keep track of elements and their indices
+    for i in range(len(arr) - 1, -1, -1):  # Iterate over the input array 'arr' in reverse order
+        if not st:  # If the stack is empty
+            ans.append(len(arr))  # Append the length of 'arr' to 'ans'
+        elif st[-1][1] < arr[i]:  # If the element at the top of the stack is smaller than the current element in 'arr'
+            ans.append(st[-1][0])  # Append the index of the top element in 'st' to 'ans'
+        else:  # If the element at the top of the stack is greater than or equal to the current element in 'arr'
+            while st and st[-1][1] >= arr[i]:  # Pop elements from 'st' as long as the top element is greater than or equal to the current element
+                st.pop()
+            if not st:  # If 'st' is empty after popping elements
+                ans.append(len(arr))  # Append the length of 'arr' to 'ans'
+            else:  # If 'st' is not empty after popping elements
+                ans.append(st[-1][0])  # Append the index of the new top element in 'st' to 'ans'
+        st.append([i, arr[i]])  # Push the current element and its index onto 'st'
+    return ans[::-1]  # Return the 'ans' list in reverse order
+
+# Define a function called nsl which calculates the index of the next smaller element to the left for each element in the input array 'arr'
+def nsl(arr):
+    ans = []  # Initialize an empty list 'ans' to store the results
+    st = []   # Initialize an empty stack 'st' to keep track of elements and their indices
+    for i in range(len(arr)):  # Iterate over the input array 'arr'
+        if not st:  # If the stack is empty
+            ans.append(-1)  # Append -1 to 'ans' indicating no smaller element to the left
+        elif st[-1][1] < arr[i]:  # If the element at the top of the stack is smaller than the current element in 'arr'
+            ans.append(st[-1][0])  # Append the index of the top element in 'st' to 'ans'
+        else:  # If the element at the top of the stack is greater than or equal to the current element in 'arr'
+            while st and st[-1][1] >= arr[i]:  # Pop elements from 'st' as long as the top element is greater than or equal to the current element
+                st.pop()
+            if not st:  # If 'st' is empty after popping elements
+                ans.append(-1)  # Append -1 to 'ans' indicating no smaller element to the left
+            else:  # If 'st' is not empty after popping elements
+                ans.append(st[-1][0])  # Append the index of the new top element in 'st' to 'ans'
+        st.append([i, arr[i]])  # Push the current element and its index onto 'st'
+    return ans
+
+# Define a function called 'largestRectangle' which calculates the largest rectangle that can be formed in a histogram represented by the input array 'h'
+def largestRectangle(h):
+    s1 = nsl(h)  # Calculate the index of the next smaller element to the left using the 'nsl' function
+    s2 = nsr(h)  # Calculate the index of the next smaller element to the right using the 'nsr' function
+    res = 0  # Initialize a variable 'res' to store the maximum area of the rectangle
+    n = len(h)  # Get the length of the input array 'h'
+    for i in range(len(h)):  # Iterate over the elements of the input array 'h'
+        res = max(res, (s2[i] - s1[i] - 1) * h[i])  # Calculate the area of the rectangle and update 'res' if a larger area is found
+    return res  # Return the maximum area of the rectangle
+
+#########################################################################################################################################################
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    n = int(input().strip())
+
+    h = list(map(int, input().rstrip().split()))
+
+    result = largestRectangle(h)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()
