@@ -1,0 +1,53 @@
+# Enter your code here. Read input from STDIN. Print output to STDOUT
+
+# Write your code here
+
+# Function to perform text editing operations
+def text_edit(operations):
+    undo_stack = []  # Stack to store information for undo operation
+    main_stack = []  # Stack to store the main text
+    
+    # Loop through each operation
+    for item in operations:
+        if (item[0] == '1'):
+            # Append characters to the main stack
+            main_stack.extend(item[2:])
+            # Store the operation for potential undo
+            undo_stack.append([item[0], item[2:]])
+        elif item[0] == '2':
+            num = int(item[2:])
+            temp = []
+            if len(main_stack):
+                # Delete the last 'num' characters from the main stack
+                deleted = main_stack[-num:]
+                temp = deleted
+                main_stack = main_stack[0:-num]
+            # Store the operation for potential undo
+            undo_stack.append([item[0], temp])
+        elif item[0] == '3':
+            position = int(item[2:]) - 1
+            if position < len(main_stack):
+                # Print the character at the specified position
+                print(main_stack[position])
+        elif item[0] == '4':
+            if len(undo_stack):
+                # Pop the top operation from the undo stack
+                top = undo_stack.pop()
+                if top[0] == '1':
+                    # Undo the append operation by removing characters from the main stack
+                    items_to_remove = len(top[1])       
+                    main_stack = main_stack[0: -items_to_remove]
+                elif top[0] == '2':
+                    # Undo the delete operation by adding characters back to the main stack
+                    items_to_add = top[1]
+                    main_stack.extend(items_to_add)
+
+# Main entry point
+if __name__ == "__main__":
+    num_ops = int(input().strip())  # Read the number of operations
+    operations = []
+    # Read each operation and append to the list
+    for i in range(num_ops):
+        operations.append(input().strip())
+    # Call the text_edit function with the list of operations
+    text_edit(operations)
