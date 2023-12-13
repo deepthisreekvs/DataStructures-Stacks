@@ -1,0 +1,61 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+# Function to find the maximum number of elements that can be selected from two stacks
+# without exceeding a given maximum sum.
+def twoStacks(maxSum, a, b):
+#write your code here
+    i = j = s = 0  # Initialize pointers and sum
+
+    # Move pointer on stack 'a' until the sum becomes greater than maxSum
+    while i < len(a) and s + a[i] <= maxSum:
+        s += a[i]
+        i += 1
+
+    n = maxn = i  # Initialize counters for the total number of elements and maximum count
+    i -= 1  # Adjust pointer
+
+    # Continue selecting elements from stack 'b' and updating counters
+    while j < len(b):
+        if s + b[j] <= maxSum:
+            s += b[j]
+            j += 1
+            n += 1
+            maxn = max(maxn, n)
+        elif i >= 0:
+            # If adding an element from stack 'b' exceeds maxSum, remove an element from stack 'a'
+            s -= a[i]
+            i -= 1
+            n -= 1
+        else:
+            # If neither stack can contribute more elements, break the loop
+            break
+
+    return maxn
+
+# Main function to read input and call the twoStacks function
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    g = int(input().strip())  # Number of test cases
+
+    for g_itr in range(g):
+        first_multiple_input = input().rstrip().split()
+
+        n = int(first_multiple_input[0])  # Size of stack 'a'
+        m = int(first_multiple_input[1])  # Size of stack 'b'
+        maxSum = int(first_multiple_input[2])  # Maximum allowed sum
+
+        a = list(map(int, input().rstrip().split()))  # Elements of stack 'a'
+        b = list(map(int, input().rstrip().split()))  # Elements of stack 'b'
+
+        result = twoStacks(maxSum, a, b)  # Call the function
+
+        fptr.write(str(result) + '\n')  # Write the result to the output file
+
+    fptr.close()  # Close the output file
